@@ -1,16 +1,14 @@
-from pydantic_ai.models.openai import OpenAIModel
+from pydantic_ai.models.gemini import GeminiModel
 from dotenv import load_dotenv
 import os
 
 load_dotenv()
 
 def get_model():
-    llm = os.getenv('MODEL_CHOICE', 'gpt-4o-mini')
-    base_url = os.getenv('BASE_URL', 'https://api.openai.com/v1')
+    llm = os.getenv('MODEL_CHOICE', 'gemini-2.0-flash')
     api_key= os.getenv('LLM_API_KEY', 'no-api-key-provided')
 
-    return OpenAIModel(
+    return GeminiModel(
         llm,
-        base_url=base_url,
         api_key=api_key
     )
