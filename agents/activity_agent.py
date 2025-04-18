@@ -32,8 +32,8 @@ activity_agent= Agent(
     retries=2
 )
 
-@activity_agent.tool
-async def get_weather_forecase(city: str, date: str):
+@activity_agent.tool_plain
+async def get_weather_forecast(city: str, date: str):
     """Get the weather forecast for a city on a specific date."""
 
     weather_data = {

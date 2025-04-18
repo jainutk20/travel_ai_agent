@@ -18,7 +18,7 @@ model = get_model()
 class TravelDetails(BaseModel):
     """Details for the current trip."""
     response: str = Field(description="The response to give back to the user if they did not provide all the necessary details for their trip")
-    destinaion: str
+    destination: str
     origin:str
     max_hotel_price: int
     date_leaving: str = Field(description='Date in format MM-DD')

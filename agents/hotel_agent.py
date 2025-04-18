@@ -16,7 +16,7 @@ model = get_model()
 @dataclass
 class HotelDeps:
     hotel_amenities: List[str]
-    budget_levl: str
+    budget_level: str
 
 system_prompt= """
 You are a hotel specialist who helps users find the best accommodations for their trips.
@@ -75,7 +75,7 @@ async def search_hotels(ctx: RunContext[HotelDeps], city: str, check_out: str, m
 
     # Now check for user preferences
     preferred_amenities = ctx.deps.hotel_amenities
-    budget_level = ctx.deps.budget_levl
+    budget_level = ctx.deps.budget_level
 
     if preferred_amenities is not None:
         # Get a score for each hotel based on matching amenities
