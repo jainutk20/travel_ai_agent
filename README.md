@@ -1,6 +1,8 @@
 # Travel AI Agent
 Travel AI Agent is a multi-agent system designed to assist users in planning travel itineraries efficiently. By leveraging AI agents, the system aims to automate and optimize various aspects of travel planning, providing users with tailored itineraries based on their preferences and constraints.​
 
+![image](https://github.com/user-attachments/assets/dc21c407-fa46-44e6-9c9e-7bdff15c5951)
+
 
 ## Features
 * **Multi-Agent Architecture**: Utilizes a system of AI agents, each responsible for specific tasks such as destination selection, accommodation booking, and activity scheduling.
