@@ -54,8 +54,8 @@ class TravelState(TypedDict):
 # Node functions for our graph
 # info gathering node
 async def gather_info(state: TravelState, writer) ->Dict[str, Any]:
-    """Gather necessary travel information from the user"""
-    user_input = state[user_input]
+    """Gather necessary travel information from the user."""
+    user_input = state["user_input"]
 
     # Convert message history into Pydanitc AI format
     message_history: List[ModelMessage] = []
@@ -63,9 +63,11 @@ async def gather_info(state: TravelState, writer) ->Dict[str, Any]:
         message_history.extend(ModelMessagesTypeAdapter.validate_json(message_row))
 
     # Call the info gathering agent
+    # result = await info_gathering_agent.run(user_input)
+    # data = result.data
     async with info_gathering_agent.run_stream(user_input, message_history=message_history) as result:
         curr_response = ""
-        async for messasge, last in result.stream_structured(debounce_by=0.01):
+        async for messasge, last in result.stream_structured(debounce_by=0.1):
             try:
                 if last and not travel_details.response:
                     raise Exception("Incorrect travel details returned by agent.")
@@ -79,7 +81,6 @@ async def gather_info(state: TravelState, writer) ->Dict[str, Any]:
             if travel_details.response:
                 writer(travel_details.response[len(curr_response):])
                 curr_response = travel_details.response
-
     # return response and ask for more details if required
     data = await result.get_data()
     return {
@@ -96,12 +97,11 @@ async def get_flight_recommendations(state:TravelState, writer) -> Dict[str, Any
 
     # Create the flight dependencies to pass on to the agent
     flight_dependencies = FlightDeps(preferred_airlines=preferred_airlines)
-
     # prepare the prompt
     prompt = f"I need flight recommendations from {travel_details['origin']} to {travel_details['destination']} on {travel_details['date_leaving']}. Return flight on {travel_details['date_returning']}."
 
     # call the flight agent
-    result = await flight_agent.run(prompt=prompt, deps=flight_dependencies)
+    result = await flight_agent.run(user_prompt=prompt, deps=flight_dependencies)
 
     # return the flight recommendations
     return {"flight_results": result.data}
@@ -218,9 +218,9 @@ def build_travel_agent_graph():
 
     # Conditional edge to get all info if not provided
     graph.add_conditional_edges(
-        source="gather_info",
-        path=route_after_info_gathering,
-        then=["get_next_user_message", "get_flight_recommendations", "get_hotel_recommendations", "get_activity_recommendations"]
+        "gather_info",
+        route_after_info_gathering,
+        ["get_next_user_message", "get_flight_recommendations", "get_hotel_recommendations", "get_activity_recommendations"]
     )
 
     # If we have taken the counditional route to get next message, go back to gather info
